@@ -26,7 +26,7 @@ class VoteCreateView(APIView):
 
 class VoteResultsView(APIView):
     serializer_class_old_version = VoteSerializer  # for old application version
-    serializer_class = VoteResultSerializer # for new application version
+    serializer_class = VoteResultSerializer  # for new application version
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -40,14 +40,20 @@ class VoteResultsView(APIView):
                     vote_date=today,
                     menu_item__menu__restaurant=user.restaurant,
                 )
-                serializer = self.serializer_class_old_version(votes, many=True)
+                serializer = self.serializer_class_old_version(
+                    votes, many=True
+                )
 
             else:
                 votes = Vote.objects.filter(
                     vote_date=today,
                     menu_item__menu__restaurant=user.restaurant
-                ).values('menu_item').annotate(vote_count=Count('menu_item')).order_by('vote_count')
-                serializer = self.serializer_class(votes, many=True, context={'request': request})
+                ).values('menu_item').annotate(
+                    vote_count=Count('menu_item')).order_by('vote_count'
+                                                            )
+                serializer = self.serializer_class(
+                    votes, many=True, context={'request': request}
+                )
 
         else:
             return Response(

@@ -7,7 +7,9 @@ from menus.models import Menu
 
 @pytest.mark.django_db
 class TestMenuListView:
-    def test_menu_list_authenticated(self, client, user, restaurant, menu, get_jwt_token):
+    def test_menu_list_authenticated(
+            self, client, user, restaurant, menu, get_jwt_token
+    ):
         user.restaurant = restaurant
         user.save()
         token = get_jwt_token(user)
@@ -36,20 +38,26 @@ class TestMenuListView:
 
 @pytest.mark.django_db
 class TestMenuCreateView:
-    def test_create_menu_valid(self, client, admin_user, restaurant, get_jwt_token):
+    def test_create_menu_valid(
+            self, client, admin_user, restaurant, get_jwt_token
+    ):
         admin_user.restaurant = restaurant
         admin_user.save()
         token = get_jwt_token(admin_user)
         client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
         data = {
             "restaurant": restaurant.id,
-            "menu_items_input": [{"name": "Test Item", "description": "Test Description"}]
+            "menu_items_input": [
+                {"name": "Test Item", "description": "Test Description"}
+            ]
         }
         response = client.post("/api/menu/create/", data, format="json")
         assert response.status_code == status.HTTP_201_CREATED
         assert Menu.objects.filter(restaurant=restaurant).exists()
 
-    def test_create_menu_invalid(self, client, admin_user, restaurant, get_jwt_token):
+    def test_create_menu_invalid(
+            self, client, admin_user, restaurant, get_jwt_token
+    ):
         admin_user.restaurant = restaurant
         admin_user.save()
         token = get_jwt_token(admin_user)

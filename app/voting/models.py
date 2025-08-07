@@ -2,8 +2,12 @@ from django.db import models
 
 
 class Vote(models.Model):
-    employee = models.ForeignKey("authentication.Employee", on_delete=models.CASCADE, null=False)
-    menu_item = models.ForeignKey("menu_items.MenuItem", on_delete=models.PROTECT, null=False)
+    employee = models.ForeignKey(
+        "authentication.Employee", on_delete=models.CASCADE, null=False
+    )
+    menu_item = models.ForeignKey(
+        "menu_items.MenuItem", on_delete=models.PROTECT, null=False
+    )
     vote_date = models.DateField(auto_now_add=True)
 
     class Meta:

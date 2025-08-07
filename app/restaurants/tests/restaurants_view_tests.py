@@ -7,7 +7,9 @@ from restaurants.models import Restaurant
 
 @pytest.mark.django_db
 class TestRestaurantViews:
-    def test_create_restaurant_as_admin(self, client, admin_user, get_jwt_token):
+    def test_create_restaurant_as_admin(
+            self, client, admin_user, get_jwt_token
+    ):
         token = get_jwt_token(admin_user)
         client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
         data = {"name": "New Restaurant"}

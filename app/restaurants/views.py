@@ -10,6 +10,7 @@ class RestaurantCreateView(generics.CreateAPIView):
     serializer_class = RestaurantSerializer
     permission_classes = [IsAdminUser]
 
+
 class RestaurantListView(generics.ListAPIView):
     queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer

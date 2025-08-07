@@ -15,6 +15,7 @@ class VoteSerializer(serializers.ModelSerializer):
         fields = ["id", "employee", "menu_item", "vote_date"]
         read_only_fields = ["employee"]
 
+
 class VoteResultSerializer(serializers.Serializer):
     menu_item = MenuItemSerializer(read_only=True)
     vote_count = serializers.IntegerField(read_only=True)
