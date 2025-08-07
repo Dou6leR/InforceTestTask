@@ -1,7 +1,6 @@
 from django.utils import timezone
 
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -10,18 +9,17 @@ from .serializers import MenuSerializer
 
 
 class MenuListView(APIView):
-    authentication_classes = [IsAuthenticated]
     serializer_class = MenuSerializer
     def get(self, request):
         user = request.user
+        if not user.is_authenticated:
+            return Response({"error": "Authentication required"}, status=status.HTTP_401_UNAUTHORIZED)
 
         today = timezone.now().date()
         if user.is_superuser and not user.restaurant:
             menus = Menu.objects.filter(menu_date=today).prefetch_related('menuitem_set')
-
         elif not user.restaurant:
             return Response({"error": "User must be associated with a restaurant"}, status=status.HTTP_403_FORBIDDEN)
-
         else:
             menus = Menu.objects.filter(restaurant=user.restaurant, menu_date=today).prefetch_related('menuitem_set')
 
@@ -32,7 +30,7 @@ class MenuListView(APIView):
 class MenuCreateView(APIView):
     serializer_class = MenuSerializer
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.serializer_class(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
